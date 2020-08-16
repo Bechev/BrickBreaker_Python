@@ -16,7 +16,6 @@ class Pad:
             self.x -= 10
 
     def move_right(self):
-        print(self.x)
         if self.x >= 800- self.length:
             pass
         else:

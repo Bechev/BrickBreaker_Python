@@ -1,3 +1,5 @@
+import pygame
+
 class Ball:
     WIN_HEIGHT = 600
     WIN_WIDTH = 800
@@ -11,13 +13,30 @@ class Ball:
         self.width = width
         self.img = img
 
-    def move(self):
+    def move(self, pad):
         if self.x <= 0 or self.x >= self.WIN_WIDTH -  self.width:
             self.Xvel = -self.Xvel
         if self.y <= 0 or self.y >= self.WIN_HEIGHT - self.height:
             self.Yvel = -self.Yvel
+        
+        if self.collide(pad):
+            self.Yvel = -self.Yvel
         self.x -= self.Xvel
         self.y -=  self.Yvel
+
+    def collide(self, pad):
+        pad_mask = pad.get_mask()
+        ball_mask = self.get_mask()
+        ball_offset = (self.x - pad.x, self.y - round(pad.y))
+
+        collision = pad_mask.overlap(ball_mask, ball_offset)
+        
+        print(collision)
+        if collision:
+            return True
+        
+        return False
+
 
     def draw(self, win):
         win.blit(self.img, (self.x, self.y))
