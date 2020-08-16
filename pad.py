@@ -8,18 +8,19 @@ class Pad:
         self.length = length
         self.width = width
         self.img = img
+        self.speed = 15
 
     def move_left(self):
         if self.x <= 0:
             pass
         else:
-            self.x -= 10
+            self.x -= self.speed
 
     def move_right(self):
-        if self.x >= 800- self.length:
+        if self.x >= 800 - self.length:
             pass
         else:
-            self.x += 10
+            self.x += self.speed
 
     def draw(self, win):
         win.blit(self.img, (self.x, self.y))

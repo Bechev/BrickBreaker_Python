@@ -16,7 +16,11 @@ class Ball:
     def move(self, pad):
         if self.x <= 0 or self.x >= self.WIN_WIDTH -  self.width:
             self.Xvel = -self.Xvel
-        if self.y <= 0 or self.y >= self.WIN_HEIGHT - self.height:
+        
+        if self.y <=0:
+            self.Yvel = -self.Yvel
+        if self.y >= self.WIN_HEIGHT - self.height:
+            print("lost")
             self.Yvel = -self.Yvel
         
         if self.collide(pad):
@@ -31,7 +35,6 @@ class Ball:
 
         collision = pad_mask.overlap(ball_mask, ball_offset)
         
-        print(collision)
         if collision:
             return True
         

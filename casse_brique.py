@@ -37,8 +37,8 @@ def draw_window(win, pad, ball):
     pygame.display.update()
 
 def main():
-    pad = Pad(300,450, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
-    ball = Ball(300, 435, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
+    pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
+    ball = Ball(300, 535, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
     clock = pygame.time.Clock()
