@@ -2,6 +2,14 @@ import pygame
 import time
 import os
 import random
+import sys
+
+
+
+# Import other classes
+sys.path.append("./")
+from pad import Pad
+
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -15,32 +23,6 @@ BLUE_BLOCK_IMG = [pygame.transform.scale2x(pygame.image.load(os.path.join('asset
 RED_BLOCK_IMG = [pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile.png'))), \
                  pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')))]
 
-class Pad:
-    IMG = PAD_IMG
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.img = self.IMG
-
-    def move_left(self):
-        if self.x <= 0:
-            pass
-        else:
-            self.x -= 10
-
-    def move_right(self):
-        print(self.x)
-        if self.x >= 800-PAD_LENGTH:
-            pass
-        else:
-            self.x += 10
-
-    def draw(self, win):
-        win.blit(self.img, (self.x, self.y))
-
-    def get_mask(self):
-        return pygame.mask.from_surface(self.img)
 
 def draw_window(win, pad):
     win.blit(BG, (0,0))
@@ -48,7 +30,7 @@ def draw_window(win, pad):
     pygame.display.update()
 
 def main():
-    pad = Pad(200,550)
+    pad = Pad(200,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 
     clock = pygame.time.Clock()
