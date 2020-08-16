@@ -8,6 +8,7 @@ import sys
 sys.path.append("./")
 from pad import Pad
 from ball import Ball
+from brick import Brick
 
 
 
@@ -24,29 +25,34 @@ BALL_LENGTH = 15
 BALL_WIDTH = 15
 BALL_IMG = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'ball.png')),(BALL_LENGTH, BALL_WIDTH))
 
-BLUE_BLOCK_IMG = [pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile.png'))), \
-                  pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')))]
-RED_BLOCK_IMG = [pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile.png'))), \
-                 pygame.transform.scale2x(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')))]
+BRICK_LENGTH = 50
+BRICK_WIDTH = 15
+BLUE_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+                  pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH))]
+
+RED_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+                 pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')), (BRICK_LENGTH, BRICK_WIDTH))]
 
 
-def draw_window(win, pad, ball):
+def draw_window(win, pad, ball, brick):
     win.blit(BG, (0,0))
     pad.draw(win)
     ball.draw(win)
+    brick.draw(win)
     pygame.display.update()
 
 def main():
+    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
     ball = Ball(300, 535, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    brick = Brick(100, 100, 2, BRICK_LENGTH, BRICK_WIDTH, BLUE_BLOCK_IMG[0])
 
     clock = pygame.time.Clock()
 
     run = True
     while run:
         clock.tick(30)
-        ball.move(pad)
+        ball.move(pad, brick)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -58,7 +64,7 @@ def main():
         elif keys[pygame.K_RIGHT]:
             pad.move_right()
 
-        draw_window(win, pad, ball)
+        draw_window(win, pad, ball, brick)
     
     pygame.quit()
     quit()

@@ -13,7 +13,7 @@ class Ball:
         self.width = width
         self.img = img
 
-    def move(self, pad):
+    def move(self, pad, brick):
         if self.x <= 0 or self.x >= self.WIN_WIDTH -  self.width:
             self.Xvel = -self.Xvel
         
@@ -23,19 +23,26 @@ class Ball:
             print("lost")
             self.Yvel = -self.Yvel
         
-        if self.collide(pad):
+        if self.collide(pad, brick):
             self.Yvel = -self.Yvel
-        self.x -= self.Xvel
+        self.x -= self.Xvel 
         self.y -=  self.Yvel
 
-    def collide(self, pad):
+    def collide(self, pad, brick):
         pad_mask = pad.get_mask()
+        brick_mask = brick.get_mask()
         ball_mask = self.get_mask()
-        ball_offset = (self.x - pad.x, self.y - round(pad.y))
+        ball_pad_offset = (self.x - pad.x, self.y - round(pad.y))
+        ball_brick_offset = (self.x - brick.x, self.y - round(brick.y))
 
-        collision = pad_mask.overlap(ball_mask, ball_offset)
-        
-        if collision:
+        ball_pad_collision = pad_mask.overlap(ball_mask, ball_pad_offset)
+        ball_brick_collision = brick_mask.overlap(ball_mask, ball_brick_offset)
+
+        if ball_pad_collision:
+            return True
+
+        if ball_brick_collision:
+            brick.hit()
             return True
         
         return False
