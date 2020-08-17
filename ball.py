@@ -23,12 +23,16 @@ class Ball:
             print("lost")
             self.Yvel = -self.Yvel
         
-        if self.collide(pad, wall):
+        if self.collide_pad(pad):
             self.Yvel = -self.Yvel
+
+        if self.collide_wall(wall):
+            self.Yvel = -self.Yvel
+
         self.x -= self.Xvel 
         self.y -=  self.Yvel
 
-    def collide(self, pad, wall):
+    def collide_pad(self, pad):
         pad_mask = pad.get_mask()
         ball_mask = self.get_mask()
         ball_pad_offset = (self.x - pad.x, self.y - round(pad.y))
@@ -38,6 +42,10 @@ class Ball:
         if ball_pad_collision:
             return True
 
+        return False
+
+    def collide_wall(self, wall):
+        ball_mask = self.get_mask()
         for brick in wall:
             if brick.life_points > 0:
                 brick_mask = brick.get_mask()

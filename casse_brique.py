@@ -3,7 +3,7 @@ import time
 import os
 import random
 import sys
-import neat-python
+# import neat-python
 
 # Import other classes
 sys.path.append("./")
