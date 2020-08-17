@@ -46,7 +46,8 @@ def draw_window(win, pad, ball, wall):
     pad.draw(win)
     ball.draw(win)
     for brick in wall:
-        brick.draw(win) 
+        if brick.life_points > 0:
+            brick.draw(win) 
     pygame.display.update()
 
 def main():

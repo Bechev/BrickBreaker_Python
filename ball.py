@@ -39,18 +39,17 @@ class Ball:
             return True
 
         for brick in wall:
-            brick_mask = brick.get_mask()
-            ball_brick_offset = (self.x - brick.x, self.y - round(brick.y))
-            
-            ball_brick_collision = brick_mask.overlap(ball_mask, ball_brick_offset)
-            
-            if ball_brick_collision:
-                brick.hit()
-                return True
-
+            if brick.life_points > 0:
+                brick_mask = brick.get_mask()
+                ball_brick_offset = (self.x - brick.x, self.y - round(brick.y))
+                
+                ball_brick_collision = brick_mask.overlap(ball_mask, ball_brick_offset)
+                
+                if ball_brick_collision:
+                    brick.hit()
+                    return True
 
         return False
-
 
     def draw(self, win):
         win.blit(self.img, (self.x, self.y))
