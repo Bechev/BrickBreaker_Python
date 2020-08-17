@@ -3,6 +3,7 @@ import time
 import os
 import random
 import sys
+import neat-python
 
 # Import other classes
 sys.path.append("./")
@@ -27,7 +28,7 @@ BALL_IMG = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'ball
 
 BRICK_LENGTH = 50
 BRICK_WIDTH = 15
-BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+BRICK_IMGS = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
                     pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
                     pygame.transform.scale(pygame.image.load(os.path.join('assets', 'red_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
                     pygame.transform.scale(pygame.image.load(os.path.join('assets', 'red_tile.png')), (BRICK_LENGTH, BRICK_WIDTH))]
@@ -53,11 +54,11 @@ def draw_window(win, pad, ball, wall):
 def main():
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
-    ball = Ball(300, 535, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
+    ball = Ball(300, 350, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
     wall = []
     for row_index, row in enumerate(LEVEL):
         for column_index, column in enumerate(row):
-            brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column[0], BRICK_LENGTH, BRICK_WIDTH, BLOCK_IMG)
+            brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column[0], BRICK_LENGTH, BRICK_WIDTH, BRICK_IMGS)
             wall.append(brick)
 
     clock = pygame.time.Clock()

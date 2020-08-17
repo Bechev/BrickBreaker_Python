@@ -15,11 +15,9 @@ class Brick:
     def updateImage(self):
         self.img = self.imgs[self.life_points -1]
 
-
     def hit(self):
         self.life_points -= 1
         self.updateImage()
-
 
     def draw(self, win):
         win.blit(self.img, (self.x, self.y))
