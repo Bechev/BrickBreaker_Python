@@ -7,30 +7,45 @@ class Ball:
     def __init__(self, x, y, height, width, img):
         self.x = x
         self.y = y
-        self.Xvel = 10
-        self.Yvel = 10
         self.height = height
         self.width = width
         self.img = img
+        self.vel = 10
+        self.xDirection = 1
+        self.yDirection = 1
+        self.angle = 1
 
     def move(self, pad, wall):
-        if self.x <= 0 or self.x >= self.WIN_WIDTH - self.width:
-            self.Xvel = -self.Xvel
+        # Check if the ball touches the left or right borders of the screen
+        if self.x <= 0:
+            self.xDirection = 1
+        if self.x >= self.WIN_WIDTH - self.width:
+            self.xDirection = -1
         
+        # Check if the ball touches the top or bottom borders of the screen
         if self.y <= 0:
-            self.Yvel = -self.Yvel
+            self.yDirection = 1
+
+        # If the ball touches the bottom border, trigger a loss
         if self.y >= self.WIN_HEIGHT - self.height:
             print("lost")
-            self.Yvel = -self.Yvel
+            self.yDirection= -1
         
         if self.collide_pad(pad):
-            self.Yvel = -self.Yvel
+            if self.x >= (pad.x + pad.length/2):
+                self.xDirection = 1
+            else:
+                self.xDirection = -1      
+            self.angle = round(abs(((self.x + self.width/2) - (pad.x + pad.length/2))/2) -10)
+            self.yDirection *= -1
 
         if self.collide_wall(wall):
-            self.Yvel = -self.Yvel
+            self.yDirection = -self.yDirection
 
-        self.x -= self.Xvel 
-        self.y -=  self.Yvel
+        self.x += self.xDirection * (self.vel + self.angle)
+        self.y +=  self.vel * self.yDirection
+
+
 
     def collide_pad(self, pad):
         pad_mask = pad.get_mask()
