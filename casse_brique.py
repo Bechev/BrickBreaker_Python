@@ -33,26 +33,38 @@ BLUE_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets'
 RED_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
                  pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')), (BRICK_LENGTH, BRICK_WIDTH))]
 
+LEVEL = [
+    [[1], [2], [1], [2], [1], [2], [1], [2], [1], [2], [1], [2], [1], [2]],
+    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
+    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
+    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
+    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+    ]
 
-def draw_window(win, pad, ball, brick):
+def draw_window(win, pad, ball, wall):
     win.blit(BG, (0,0))
     pad.draw(win)
     ball.draw(win)
-    brick.draw(win)
+    for brick in wall:
+        brick.draw(win) 
     pygame.display.update()
 
 def main():
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
     ball = Ball(300, 535, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
-    brick = Brick(100, 100, 2, BRICK_LENGTH, BRICK_WIDTH, BLUE_BLOCK_IMG[0])
+    wall = []
+    for row_index, row in enumerate(LEVEL):
+        for column_index, column in enumerate(row):
+            brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column, BRICK_LENGTH, BRICK_WIDTH, BLUE_BLOCK_IMG[0])
+            wall.append(brick)
 
     clock = pygame.time.Clock()
 
     run = True
     while run:
         clock.tick(30)
-        ball.move(pad, brick)
+        ball.move(pad, wall)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -64,7 +76,7 @@ def main():
         elif keys[pygame.K_RIGHT]:
             pad.move_right()
 
-        draw_window(win, pad, ball, brick)
+        draw_window(win, pad, ball, wall)
     
     pygame.quit()
     quit()
