@@ -27,18 +27,18 @@ BALL_IMG = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'ball
 
 BRICK_LENGTH = 50
 BRICK_WIDTH = 15
-BLUE_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
-                  pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH))]
+BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+                    pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+                    pygame.transform.scale(pygame.image.load(os.path.join('assets', 'red_tile_broken.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
+                    pygame.transform.scale(pygame.image.load(os.path.join('assets', 'red_tile.png')), (BRICK_LENGTH, BRICK_WIDTH))]
 
-RED_BLOCK_IMG = [pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile.png')),(BRICK_LENGTH, BRICK_WIDTH)), \
-                 pygame.transform.scale(pygame.image.load(os.path.join('assets', 'blue_tile_broken.png')), (BRICK_LENGTH, BRICK_WIDTH))]
 
 LEVEL = [
-    [[1], [2], [1], [2], [1], [2], [1], [2], [1], [2], [1], [2], [1], [2]],
-    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
-    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
-    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]],
-    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+    [[4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2]],
+    [[2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4]],
+    [[4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2]],
+    [[2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4]],
+    [[4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2]]
     ]
 
 def draw_window(win, pad, ball, wall):
@@ -57,7 +57,7 @@ def main():
     wall = []
     for row_index, row in enumerate(LEVEL):
         for column_index, column in enumerate(row):
-            brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column, BRICK_LENGTH, BRICK_WIDTH, BLUE_BLOCK_IMG[0])
+            brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column[0], BRICK_LENGTH, BRICK_WIDTH, BLOCK_IMG)
             wall.append(brick)
 
     clock = pygame.time.Clock()
