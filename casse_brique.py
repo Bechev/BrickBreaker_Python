@@ -3,7 +3,7 @@ import time
 import os
 import random
 import sys
-# import neat-python
+import neat
 
 # Import other classes
 sys.path.append("./")
@@ -42,18 +42,31 @@ LEVEL = [
     [[4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2]]
     ]
 
-def draw_window(win, pad, ball, wall):
+def draw_window(win, pads, ball, wall):
     win.blit(BG, (0,0))
-    pad.draw(win)
+    for pad in pads:
+        pad.draw(win)
     ball.draw(win)
     for brick in wall:
         if brick.life_points > 0:
             brick.draw(win) 
     pygame.display.update()
 
-def main():
+def main(genomes, config):
+
+    nets =[]
+    ge = []
+    pads =[]
+
+    for _, genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+        nets.append(net)
+        pads.append(Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG))
+        genome.fitness = 0
+        ge.append(genome)
+    
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
+    # pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
     ball = Ball(300, 350, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
     wall = []
     for row_index, row in enumerate(LEVEL):
@@ -66,22 +79,50 @@ def main():
     run = True
     while run:
         clock.tick(30)
-        ball.move(pad, wall)
+        ball.move(pads, wall, ge, nets)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            
-        keys = pygame.key.get_pressed()
+                pygame.quit()
+                quit()
+        
+        if len(pads) <=0:
+            run = False
+            break 
 
-        if keys[pygame.K_LEFT]:
+        for index, pad in enumerate(pads):
+            output = nets[index].activate((pad.x, ball.x))
+            if output[0] >= 0.5:
+                pad.move_left()
+            if output[1] >= 0.5:
+                pad.move_right()
+
+        # keys = pygame.key.get_pressed()
+
+        # if keys[pygame.K_LEFT]:
             pad.move_left()
-        elif keys[pygame.K_RIGHT]:
+        # elif keys[pygame.K_RIGHT]:
             pad.move_right()
 
-        draw_window(win, pad, ball, wall)
+        draw_window(win, pads, ball, wall)
     
-    pygame.quit()
-    quit()
 
-main()
+
+
+def run(config_file):
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_file)
+    p = neat.Population(config)
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+
+    winner = p.run(main, 1)
+
+
+if __name__ == "__main__":
+    local_dir =  os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, "config-feedforward.txt")
+    run(config_path)
+    
 
