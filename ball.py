@@ -19,15 +19,17 @@ class Ball:
     def move(self, pads, walls, ge, nets, index):
         # Check if the ball touches the left or right borders of the screen
         if self.x <= 0:
+            self.countNoProgress +=1
             self.xDirection = 1
         if self.x >= self.WIN_WIDTH - self.width:
+            self.countNoProgress +=1
             self.xDirection = -1
         
         # Check if the ball touches the top or bottom borders of the screen
         if self.y <= 0:
+            self.countNoProgress +=1
             self.yDirection = 1
             # Punish the AI if touches the top of the screen game too much to speed the process
-            self.countNoProgress +=1
             ge[index].fitness -= 0.1
     
         # If the ball touches the bottom border, trigger a loss
@@ -35,6 +37,7 @@ class Ball:
             return 'lost'
         
         if self.collide_pad(pads[index]):
+            self.countNoProgress +=1
             ge[index].fitness += 0.1
             if self.x >= (pads[index].x + pads[index].length/2):
                 self.xDirection = 1
@@ -49,7 +52,7 @@ class Ball:
             ge[index].fitness += 0.2
             self.countNoProgress = 0
 
-        if self.countNoProgress >= 15
+        if self.countNoProgress >= 15:
             return 'lost'
 
 
