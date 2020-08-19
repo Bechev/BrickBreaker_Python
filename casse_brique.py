@@ -116,12 +116,12 @@ def main(genomes, config):
 
         for index, pad in enumerate(pads):
             output = nets[index].activate((pad.x, balls[index].x))
-            if output[0] > 0:
+            if output[0] >= 0:
                 pad.move_left()
             if output[0] < 0:
                 pad.move_right()
-            if output[0]== 0:
-                pass
+            # if output[0]== 0:
+            #     pass
 
         # keys = pygame.key.get_pressed()
 
