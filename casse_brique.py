@@ -42,44 +42,67 @@ LEVEL = [
     [[4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2], [4], [2]]
     ]
 
-def draw_window(win, pads, ball, wall):
+def draw_window(win, pads, balls, walls):
     win.blit(BG, (0,0))
     for pad in pads:
         pad.draw(win)
-    ball.draw(win)
-    for brick in wall:
-        if brick.life_points > 0:
-            brick.draw(win) 
+    for ball in balls:
+        ball.draw(win)
+    for wall in walls:
+        for brick in wall:
+            if brick.life_points > 0:
+                brick.draw(win) 
     pygame.display.update()
 
 def main(genomes, config):
 
-    nets =[]
+    nets = []
     ge = []
-    pads =[]
+    pads = []
+    balls = []
+    walls = []
+    deaths = len(genomes)
 
-    for _, genome in genomes:
-        net = neat.nn.FeedForwardNetwork.create(genome, config)
-        nets.append(net)
-        pads.append(Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG))
-        genome.fitness = 0
-        ge.append(genome)
-    
+    # print('length genomes')
+    # print(len(genomes))
+    # print('........')
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # pad = Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG)
-    ball = Ball(300, 350, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
+    # ball = Ball(300, 350, BALL_LENGTH, BALL_WIDTH, BALL_IMG)
     wall = []
     for row_index, row in enumerate(LEVEL):
         for column_index, column in enumerate(row):
             brick = Brick((column_index + 1) * BRICK_LENGTH, (row_index + 1) * BRICK_WIDTH, column[0], BRICK_LENGTH, BRICK_WIDTH, BRICK_IMGS)
             wall.append(brick)
 
+    for _, genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+        nets.append(net)
+        pads.append(Pad(300,550, PAD_LENGTH, PAD_WIDTH, PAD_IMG))
+        balls.append(Ball(300, 350, BALL_LENGTH, BALL_WIDTH, BALL_IMG))
+        walls.append(wall)
+        genome.fitness = 0
+        ge.append(genome)
+    
+
+    
     clock = pygame.time.Clock()
 
     run = True
     while run:
         clock.tick(30)
-        ball.move(pads, wall, ge, nets)
+        for index, ball in enumerate(balls):
+            move = ball.move(pads, walls, ge, nets, balls.index(ball))
+            if move == 'lost':
+                # print(index )
+                # deaths += 1
+                ge[balls.index(ball)].fitness -= 1
+                pads.pop(balls.index(ball))
+                walls.pop(balls.index(ball))
+                nets.pop(balls.index(ball))
+                ge.pop(balls.index(ball))
+                balls.pop(balls.index(ball))
+        # ball.move(pads, wall, ge, nets)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -92,20 +115,22 @@ def main(genomes, config):
             break 
 
         for index, pad in enumerate(pads):
-            output = nets[index].activate((pad.x, ball.x))
-            if output[0] >= 0.5:
+            output = nets[index].activate((pad.x, balls[index].x))
+            if output[0] > 0:
                 pad.move_left()
-            if output[1] >= 0.5:
+            if output[0] < 0:
                 pad.move_right()
+            if output[0]== 0:
+                pass
 
         # keys = pygame.key.get_pressed()
 
         # if keys[pygame.K_LEFT]:
-            pad.move_left()
+            # pad.move_left()
         # elif keys[pygame.K_RIGHT]:
-            pad.move_right()
+            # pad.move_right()
 
-        draw_window(win, pads, ball, wall)
+        draw_window(win, pads, balls, walls)
     
 
 
@@ -117,7 +142,7 @@ def run(config_file):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main, 1)
+    winner = p.run(main, 50)
 
 
 if __name__ == "__main__":

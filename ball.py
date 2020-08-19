@@ -15,7 +15,7 @@ class Ball:
         self.yDirection = 1
         self.angle = 1
 
-    def move(self, pads, wall, ge, nets):
+    def move(self, pads, walls, ge, nets, index):
         # Check if the ball touches the left or right borders of the screen
         if self.x <= 0:
             self.xDirection = 1
@@ -26,28 +26,30 @@ class Ball:
         if self.y <= 0:
             self.yDirection = 1
 
-        for index, pad in enumerate(pads):
+    
+        # If the ball touches the bottom border, trigger a loss
+        if self.y >= self.WIN_HEIGHT - self.height:
+            # print("LOSTLOSTLOST")
+            # Remove the genome from various lists when loses
+            return 'lost'
+            # ge[index].fitness -= 1
+            # pads.pop(index)
+            # nets.pop(index)
+            # ge.pop(index)
+            # self.yDirection= -1 
         
-            # If the ball touches the bottom border, trigger a loss
-            if self.y >= self.WIN_HEIGHT - self.height:
-                # Remove the genome from various lists when loses
-                ge[index].fitness -= 1
-                pads.pop(index)
-                nets.pop(index)
-                ge.pop(index)
-                self.yDirection= -1 
-            
-            if self.collide_pad(pad):
-                ge[index].fitness += 1
-                if self.x >= (pad.x + pad.length/2):
-                    self.xDirection = 1
-                else:
-                    self.xDirection = -1
-        
-                self.angle = round(abs(((self.x + self.width/2) - (pad.x + pad.length/2))/2) -10)
-                self.yDirection *= -1
+        if self.collide_pad(pads[index]):
+            ge[index].fitness += 1
+            if self.x >= (pads[index].x + pads[index].length/2):
+                self.xDirection = 1
+            else:
+                self.xDirection = -1
+    
+            # self.angle = round(abs(((self.x + self.width/2) - (pads[index].x + pads[index].length/2))/2) -10)
+            self.angle = 0
+            self.yDirection *= -1
 
-        if self.collide_wall(wall):
+        if self.collide_wall(walls[index]):
             self.yDirection = -self.yDirection
             ge[index].fitness += 0.1
 
